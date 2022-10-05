@@ -15,18 +15,27 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import static spark.Spark.port;
+import static spark.Spark.get;
 
+///localhost/submit?kjhfcbvkjndvnfdkj
 /**
  *
  * @author cristian.forero-m
  */
 public class SparkWebServer {
     public static void main(String... args){
-          port(getPort());
+        port(getPort());
+        get("submit", (req,res)-> {
+            req.queryParams("text");
+            return null;
+        });
+    }
+    
+    private static void dbConnection(String cadena){
         // Conexión a base de datos mongodb
 
         //URL para Atlasdb en la nube
-        String connstr = "mongodb+srv://dbAdmin:opDM6ufM0sEVURr6@cluster0.tnqcz.mongodb.net/?retryWrites=true&w=majority";
+        String connstr = "mongodb+srv://pokecris200:Sept2022.@cluster0.1bffmnu.mongodb.net/?retryWrites=true&w=majority";
 
         //URL para conexión local
         //String connstr ="mongodb://localhost:40000/?retryWrites=true&w=majority";
@@ -50,12 +59,12 @@ public class SparkWebServer {
         databases.forEach(db -> System.out.println(db.toJson()));
 
         //Obtener objeto base de datos. Si no existe lo crea
-        MongoDatabase database = mongoClient.getDatabase("myFirstDatabase");
+        MongoDatabase database = mongoClient.getDatabase("Logs");
         //Obtener objeto colección. Si no existe lo crea
-        MongoCollection<Document> customers = database.getCollection("customer");
+        MongoCollection<Document> logs = database.getCollection("log");
 
         //Obtiene un iterable
-        FindIterable<Document> iterable = customers.find();
+        FindIterable<Document> iterable = logs.find();
         MongoCursor<Document> cursor = iterable.iterator();
 
         //Recorre el iterador obtenido del iterable
@@ -70,7 +79,7 @@ public class SparkWebServer {
         customer.append("_class", "co.edu.escuelaing.mongodemo.Customer.Customer");
 
         //Agrega el nuevo cliente a la colección
-        customers.insertOne(customer);
+        logs.insertOne(customer);
 
         //Lee el iterable directamente para imprimir documentos
         for (Document d : iterable) {
